@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'dart:convert';
+import 'package:aula_01/home.dart';
 import 'package:aula_01/values/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -175,6 +176,10 @@ class _PaginaCadastroState extends State<PaginaCadastro> {
               RaisedButton(
                 onPressed: () {
                   _doSignUp();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
                 },
                 child: const Text(
                   "Cadastrar",
@@ -201,6 +206,7 @@ class _PaginaCadastroState extends State<PaginaCadastro> {
     );
     // ignore: avoid_print
     print(newUser);
+    _saveUser(newUser);
   }
 
   // ignore: unused_element

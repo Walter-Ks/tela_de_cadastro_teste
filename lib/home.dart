@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'package:aula_01/models/user_models.dart';
 import 'package:aula_01/values/preferences.dart';
 import 'package:async_extension/async_extension.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'package:aula_01/paginaCadastro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Color bottomColor = Colors.lightBlueAccent;
 
   final TextEditingController _mailInputController = TextEditingController();
-  TextEditingController get _passwordInputController => TextEditingController();
+  final TextEditingController _passwordInputController =
+      TextEditingController();
 
   bool checkBox = false;
 
@@ -183,21 +184,57 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _doLogin() async {
-    String mailForm = _mailInputController.toString();
-    String passWordForm = _passwordInputController.toString();
+    String mailForm = _mailInputController.text;
+    String passWordForm = _passwordInputController.text;
 
-    User savedUser = await _getSavedUser();
+    User _savedUser = await _getSavedUser();
 
-    if (mailForm == savedUser.mail && passWordForm == savedUser.password) {
-      // ignore: avoid_print
-      print("deu certo");
+    if (mailForm == _savedUser.mail && passWordForm == _savedUser.password) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: const Text("Sucesso!"),
+            content: const Text("Sessão inicíada"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              TextButton(
+                child: const Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } else {
       // ignore: avoid_print
-      print("num deu");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: const Text("Erro"),
+            content: const Text(
+                "Erro ao iniciar sessão, verfiquer o email e senha."),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              TextButton(
+                child: const Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
-  Future<User> _getSavedUser() async {
+  FutureOr<User> _getSavedUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonUser = prefs.getString(
       Preferences.activeUser,
@@ -205,7 +242,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // ignore: avoid_print
     print(jsonUser);
 
-    User user = User.fromJson(jsonDecode(jsonUser!));
+    Map<String, dynamic> mapUser = jsonDecode(jsonUser!);
+
+    User user = User.fromJson(mapUser);
     return user;
   }
 }

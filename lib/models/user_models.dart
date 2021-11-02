@@ -23,7 +23,7 @@ class User {
     return data;
   }
 
-  @override
+  // ignore: annotate_overrides
   String toString() {
     // ignore: todo
     // TODO: implement toString
